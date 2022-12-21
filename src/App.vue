@@ -1,31 +1,32 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 
+import NewTaskInput from '@/components/NewTaskInput.vue';
 import Task from './classes/Task';
 
 const tasks: Task[] = reactive([]);
 
-function addTask() {
-  tasks.push(new Task('A New Task!'));
+function handleSubmit(name: string) {
+  tasks.push(new Task(name));
 }
 </script>
 
 <template>
   <div class="container">
-    <button
-      type="button"
-      @click="addTask()"
+    <ul
+      v-if="tasks.length > 0"
     >
-      Add Task
-    </button>
-    <ul v-if="tasks.length > 0">
       <li
-        v-for="task in tasks"
-        :key="task.name"
+        v-for="(task, index) in tasks"
+        :key="index"
       >
         {{ task.name }}
       </li>
     </ul>
+    <NewTaskInput
+      id="new-task"
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 
@@ -34,9 +35,9 @@ function addTask() {
 @import './sass/base/typography';
 
 .container {
-  max-width: 1000px;
-  background-color: gray;
-  margin: 100px auto;
-  padding: 20px;
+  max-width: 100rem;
+  background-color: #eee;
+  margin: 10rem auto;
+  padding: 2rem;
 }
 </style>

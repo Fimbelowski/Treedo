@@ -1,9 +1,3 @@
-// export default interface Task {
-//   completed: boolean | 'indeterminate';
-//   name: string;
-//   tasks: Task[];
-// }
-
 export default class Task {
   completed: boolean | 'indeterminate';
 
@@ -11,7 +5,7 @@ export default class Task {
 
   tasks: Task[];
 
-  constructor(name = '') {
+  constructor(name: string) {
     this.completed = false;
     this.name = name;
     this.tasks = [];
