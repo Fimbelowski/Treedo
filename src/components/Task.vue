@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import Task from '@/classes/Task';
+import CheckboxInput from './CheckboxInput.vue';
+import Task from '@/types/Task';
 
-defineProps<{ task: Task }>();
+defineProps<{
+  task: Task
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:complete', newValue: boolean): void,
+}>();
+
+function handleUpdateComplete(newValue: boolean) {
+  emit('update:complete', newValue);
+}
 </script>
 
 <template>
-  <!-- Checkbox -->
-  <!-- Task Name -->
-  <!-- Subtasks -->
-  <div />
+  <CheckboxInput
+    :id="task.name"
+    :model-value="task.complete"
+    @update:model-value="handleUpdateComplete"
+  />
+  <div>
+    {{ task.name }}
+  </div>
 </template>
