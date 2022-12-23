@@ -43,6 +43,7 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
     'import-newlines/enforce': ['error', 1],
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: true,
