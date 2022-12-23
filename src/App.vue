@@ -1,9 +1,22 @@
 <script setup lang="ts">
+import useTaskStore from './composables/useTaskStore';
+
+const taskStore = useTaskStore();
+
+function addTask() {
+  taskStore.createNewTask();
+}
 </script>
 
 <template>
   <div class="container">
-    <div />
+    <button
+      type="button"
+      @click="addTask"
+    >
+      Add Task
+    </button>
+    {{ taskStore.tasks.length }}
   </div>
 </template>
 
