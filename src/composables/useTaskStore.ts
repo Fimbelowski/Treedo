@@ -34,8 +34,19 @@ export default defineStore('tasks', () => {
     return id;
   }
 
+  function updateTaskComplete(taskId: number, newValue: boolean) {
+    const targetTask = taskMap.get(taskId);
+
+    if (targetTask === undefined) {
+      throw new Error(`Task with id of ${taskId} does not exist.`);
+    }
+
+    targetTask.complete = newValue;
+  }
+
   return {
     createNewTask,
     tasks: exposedTasks,
+    updateTaskComplete,
   };
 });
