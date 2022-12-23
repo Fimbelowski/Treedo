@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Task from '@/components/Task.vue';
 import useTaskStore from './composables/useTaskStore';
 
 const taskStore = useTaskStore();
@@ -16,7 +17,11 @@ function addTask() {
     >
       Add Task
     </button>
-    {{ taskStore.tasks.length }}
+    <Task
+      v-for="task in taskStore.tasks"
+      :key="task.id"
+      :task="task"
+    />
   </div>
 </template>
 
