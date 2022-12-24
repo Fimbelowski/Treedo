@@ -19,6 +19,7 @@ export default defineStore('tasks', () => {
     const newTask: Task = {
       complete: false,
       id: getNextTaskId(),
+      indeterminate: false,
       name,
       parent,
       subtasks: [],
@@ -51,6 +52,33 @@ export default defineStore('tasks', () => {
     return targetTask;
   }
 
+  function getTaskCompleteBasedOnSubtasks(taskId: number) {
+    const targetTask = getTaskById(taskId);
+
+    if (targetTask.subtasks.length === 0) {
+      throw new Error('"getTaskCompleteBasedOnSubtasks" called on a task with no subtasks.');
+    }
+
+    return targetTask.subtasks.every((subtask) => subtask.complete);
+  }
+
+  function getTaskIndeterminateBasedOnSubtasks(taskId: number) {
+    const targetTask = getTaskById(taskId);
+
+    if (targetTask.subtasks.length === 0) {
+      throw new Error('"updateTaskIndeterminateBasedOnSubtask" called on a task with no subtasks.');
+    }
+
+    const { subtasks } = targetTask;
+
+    const hasIndeterminateSubtasks = subtasks.some((subtask) => subtask.indeterminate);
+
+    const hasCompleteSubtasks = subtasks.some((subtask) => subtask.complete);
+    const hasIncompleteSubtasks = subtasks.some((subtask) => !subtask.complete);
+
+    return hasIndeterminateSubtasks || (hasCompleteSubtasks && hasIncompleteSubtasks);
+  }
+
   function updateTaskComplete(taskId: number, newValue: boolean) {
     const targetTask = getTaskById(taskId);
 
@@ -58,30 +86,48 @@ export default defineStore('tasks', () => {
 
     const { parent } = targetTask;
 
-    if (parent !== null) {
-      updateTaskCompleteBasedOnSubtasks(parent.id);
+    if (parent === null) {
+      return;
+    }
+
+    const oldParentComplete = parent.complete;
+    const newParentComplete = getTaskCompleteBasedOnSubtasks(parent.id);
+
+    if (oldParentComplete !== newParentComplete) {
+      updateTaskComplete(parent.id, newParentComplete);
+    }
+
+    const oldParentIndeterminate = parent.indeterminate;
+    const newParentIndeterminate = getTaskIndeterminateBasedOnSubtasks(parent.id);
+
+    if (oldParentIndeterminate !== newParentIndeterminate) {
+      updateTaskIndeterminate(parent.id, newParentIndeterminate);
     }
   }
 
-  function updateTaskCompleteBasedOnSubtasks(taskId: number) {
+  function updateTaskIndeterminate(taskId: number, newValue: boolean) {
     const targetTask = getTaskById(taskId);
 
-    if (targetTask.subtasks.length === 0) {
-      throw new Error('"updateTaskCompleteBasedOnSubtasks" called on a task with no subtasks.');
-    }
+    const oldValue = targetTask.indeterminate;
 
-    const oldValue = targetTask.complete;
-    const newValue = targetTask.subtasks.every((subtask) => subtask.complete);
-
-    targetTask.complete = newValue;
+    targetTask.indeterminate = newValue;
 
     const { parent } = targetTask;
 
+    if (parent === null) {
+      return;
+    }
+
     if (
       oldValue !== newValue
-      && parent !== null
+      && newValue
     ) {
-      updateTaskCompleteBasedOnSubtasks(parent.id);
+      // newValue is true, every parent of this task will also be indeterminate
+      updateTaskIndeterminate(parent.id, newValue);
+    } else if (oldValue !== newValue) {
+      // the value has changed, parent indeterminate values need to be reconsidered
+      const parentIndeterminate = getTaskIndeterminateBasedOnSubtasks(parent.id);
+      updateTaskIndeterminate(parent.id, parentIndeterminate);
     }
   }
 
