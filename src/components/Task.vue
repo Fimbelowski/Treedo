@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import TaskInterface from '@/types/Task';
 import useTaskStore from '@/composables/useTaskStore';
 
@@ -7,6 +9,8 @@ const taskStore = useTaskStore();
 const props = defineProps<{
   task: TaskInterface
 }>();
+
+const hasSubtasks = computed(() => props.task.subtasks.length > 0);
 
 function handleInput(event: Event) {
   const target = event.target as HTMLInputElement;
@@ -26,6 +30,7 @@ function handleAddSubtask() {
   >
     <input
       :checked="task.complete"
+      :disabled="hasSubtasks"
       type="checkbox"
       @input="handleInput"
     >

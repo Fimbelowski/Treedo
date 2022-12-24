@@ -41,14 +41,48 @@ export default defineStore('tasks', () => {
     return id;
   }
 
-  function updateTaskComplete(taskId: number, newValue: boolean) {
-    const targetTask = taskMap.get(taskId);
+  function getTaskById(id: number) {
+    const targetTask = taskMap.get(id);
 
     if (targetTask === undefined) {
-      throw new Error(`Task with id of ${taskId} does not exist.`);
+      throw new Error(`Error getting task, no task with id of ${id} exists.`);
     }
 
+    return targetTask;
+  }
+
+  function updateTaskComplete(taskId: number, newValue: boolean) {
+    const targetTask = getTaskById(taskId);
+
     targetTask.complete = newValue;
+
+    const { parent } = targetTask;
+
+    if (parent !== null) {
+      updateTaskCompleteBasedOnSubtasks(parent.id);
+    }
+  }
+
+  function updateTaskCompleteBasedOnSubtasks(taskId: number) {
+    const targetTask = getTaskById(taskId);
+
+    if (targetTask.subtasks.length === 0) {
+      throw new Error('"updateTaskCompleteBasedOnSubtasks" called on a task with no subtasks.');
+    }
+
+    const oldValue = targetTask.complete;
+    const newValue = targetTask.subtasks.every((subtask) => subtask.complete);
+
+    targetTask.complete = newValue;
+
+    const { parent } = targetTask;
+
+    if (
+      oldValue !== newValue
+      && parent !== null
+    ) {
+      updateTaskCompleteBasedOnSubtasks(parent.id);
+    }
   }
 
   return {
