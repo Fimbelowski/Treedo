@@ -15,14 +15,21 @@ export default defineStore('tasks', () => {
 
   const nextTaskId = ref(1);
 
-  function createNewTask() {
+  function createNewTask(name: string, parent: Task | null = null) {
     const newTask: Task = {
       complete: false,
       id: getNextTaskId(),
-      name: 'A New Task',
+      name,
+      parent,
+      subtasks: [],
     };
 
-    tasks.push(newTask);
+    if (parent === null) {
+      tasks.push(newTask);
+    } else {
+      parent.subtasks.push(newTask);
+    }
+
     taskMap.set(newTask.id, newTask);
   }
 

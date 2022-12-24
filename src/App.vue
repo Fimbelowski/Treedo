@@ -5,7 +5,7 @@ import useTaskStore from './composables/useTaskStore';
 const taskStore = useTaskStore();
 
 function addTask() {
-  taskStore.createNewTask();
+  taskStore.createNewTask('A New Task');
 }
 </script>
 
