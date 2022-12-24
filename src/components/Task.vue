@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import {
+  computed,
+  ref,
+  watch,
+} from 'vue';
 
 import TaskInterface from '@/types/Task';
 import useTaskStore from '@/composables/useTaskStore';
@@ -9,6 +13,15 @@ const taskStore = useTaskStore();
 const props = defineProps<{
   task: TaskInterface
 }>();
+
+const checkbox = ref<HTMLInputElement | null>(null);
+
+watch(
+  () => props.task.indeterminate,
+  (newValue) => {
+    setCheckboxIndeterminate(newValue);
+  },
+);
 
 const hasSubtasks = computed(() => props.task.subtasks.length > 0);
 
@@ -22,6 +35,14 @@ function handleInput(event: Event) {
 function handleAddSubtask() {
   taskStore.createNewTask('A New Subtask', props.task);
 }
+
+function setCheckboxIndeterminate(newValue: boolean) {
+  if (checkbox.value === null) {
+    throw new Error('Cannot set indeterminate on null.');
+  }
+
+  checkbox.value.indeterminate = newValue;
+}
 </script>
 
 <template>
@@ -29,6 +50,7 @@ function handleAddSubtask() {
     class="task"
   >
     <input
+      ref="checkbox"
       :checked="task.complete"
       :disabled="hasSubtasks"
       type="checkbox"
