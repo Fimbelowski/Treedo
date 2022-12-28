@@ -1,26 +1,24 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
+import NewTaskInput from './components/NewTaskInput.vue';
 import Task from '@/components/Task.vue';
 import useTaskStore from './composables/useTaskStore';
 
 const taskStore = useTaskStore();
 
-function addTask() {
-  taskStore.createNewTask('A New Task');
-}
+const showNewTaskInput = computed(() => taskStore.focusedTaskId === null);
 </script>
 
 <template>
   <div class="container">
-    <button
-      type="button"
-      @click="addTask"
-    >
-      Add Task
-    </button>
     <Task
       v-for="task in taskStore.tasks"
       :key="task.id"
       :task="task"
+    />
+    <NewTaskInput
+      v-if="showNewTaskInput"
     />
   </div>
 </template>

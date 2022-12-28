@@ -15,6 +15,8 @@ export default defineStore('tasks', () => {
 
   const nextTaskId = ref(1);
 
+  const focusedTaskId = ref<number | null>(null);
+
   function createNewTask(name: string, parent: Task | null = null) {
     const newTask: Task = {
       complete: false,
@@ -133,6 +135,7 @@ export default defineStore('tasks', () => {
 
   return {
     createNewTask,
+    focusedTaskId,
     tasks: exposedTasks,
     updateTaskComplete,
   };
