@@ -58,6 +58,7 @@ function setCheckboxIndeterminate(newValue: boolean) {
     >
     {{ task.name }}
     <button
+      v-if="!task.complete"
       type="button"
       @click="handleAddSubtask"
     >
