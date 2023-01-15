@@ -25,6 +25,8 @@ watch(
 
 const hasSubtasks = computed(() => props.task.subtasks.length > 0);
 
+const taskIdAsString = computed(() => props.task.id.toString());
+
 function handleInput(event: Event) {
   const target = event.target as HTMLInputElement;
   const { checked } = target;
@@ -50,13 +52,19 @@ function setCheckboxIndeterminate(newValue: boolean) {
     class="task"
   >
     <input
+      :id="taskIdAsString"
       ref="checkbox"
       :checked="task.complete"
       :disabled="hasSubtasks"
       type="checkbox"
       @input="handleInput"
     >
-    {{ task.name }}
+    <label
+      class="task__label"
+      :for="taskIdAsString"
+    >
+      {{ task.name }}
+    </label>
     <button
       v-if="!task.complete"
       type="button"
@@ -78,6 +86,11 @@ function setCheckboxIndeterminate(newValue: boolean) {
 
 <style lang="scss">
 .task {
+  &__label {
+    padding-left: .5rem;
+    margin-right: 0.5rem;
+  }
+
   &__subtasks {
     padding-left: 1rem;
   }
