@@ -112,6 +112,7 @@ export default defineStore('tasks', () => {
       return;
     }
 
+    // Update indeterminate in parent task
     updateTaskIndeterminate(parent.id, getTaskIndeterminateBasedOnSubtasks(parent.id));
   }
 
