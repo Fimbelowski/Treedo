@@ -17,7 +17,9 @@ export default defineStore('tasks', () => {
 
   const focusedTaskId = ref<number | null>(null);
 
-  function createNewTask(name: string, parent: Task | null = null) {
+  function createNewTask(name: string, parentId = 0) {
+    const parent = parentId !== 0 ? getTaskById(parentId) : null;
+
     const newTask: Task = {
       complete: false,
       id: getNextTaskId(),

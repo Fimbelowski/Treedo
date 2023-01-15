@@ -33,7 +33,7 @@ function handleInput(event: Event) {
 }
 
 function handleAddSubtask() {
-  taskStore.createNewTask('A New Subtask', props.task);
+  taskStore.createNewTask('A New Subtask', props.task.id);
 }
 
 function setCheckboxIndeterminate(newValue: boolean) {
