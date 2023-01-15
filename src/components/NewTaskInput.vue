@@ -26,8 +26,17 @@ function handleEnter() {
   <input
     id="new-task"
     v-model="taskName"
+    class="new-task-input__input"
     placeholder="Take Out Garbage"
     type="text"
     @keyup.enter="handleEnter"
   >
 </template>
+
+<style lang="scss">
+.new-task-input {
+  &__input {
+    margin-top: 1rem;
+  }
+}
+</style>
